@@ -15,6 +15,15 @@ int main()
     prison.accept_prisoner(p);
     prison.iterate_days(400);
     cout<<p;
+    Prisoner p2 = p;
+    Prisoner p3("ahgd", 5);
+    p3 = p;
+    cout<<p2<<p3;
+
+    Guard guard("James");
+    prison.hire_guard(guard);
+
+
 
 
     return 0;

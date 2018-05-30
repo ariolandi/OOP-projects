@@ -19,6 +19,9 @@ class Prisoner:public Person{
         Gang* gang;
     public:
         Prisoner(const char*, const double);
+        ~Prisoner();
+        Prisoner(const Prisoner&);
+        Prisoner& operator=(const Prisoner&);
         void reduce_convistion();
         void set_gang(Gang*);
         Gang* get_gang()const;
@@ -26,7 +29,8 @@ class Prisoner:public Person{
         void operator+=(const Prisoner&);
 
         friend istream& operator>>(istream&, Prisoner&);
-        friend ostream& operator<<(ostream&, Prisoner&);
+        friend ostream& operator<<(ostream&, const Prisoner&);
+        friend void join_gang(Prisoner&, const Prisoner&);
 
 };
 Prisoner::Prisoner(const char* _name, const double _conviction):
@@ -34,6 +38,20 @@ Person(_name, 0){
     conviction = _conviction;
     gang = NULL;
 }
+Prisoner::~Prisoner(){}
+Prisoner::Prisoner(const Prisoner& other):Person(other){
+    conviction = other.conviction;
+    gang = other.gang;
+}
+Prisoner& Prisoner::operator=(const Prisoner& other){
+    if(this != &other){
+        Person::operator=(other);
+        conviction = other.conviction;
+        gang = other.gang;
+    }
+}
+
+
 void Prisoner::reduce_convistion(){
     conviction--;
 }
@@ -59,8 +77,8 @@ istream& operator>>(istream& is, Prisoner& p){
     return is;
 }
 
-ostream& operator<<(ostream& os, Prisoner& p){
-    cout<<"name: "<<p.name<<" experience:"<<p.experience<<" conviction:"<<p.conviction<<endl;
+ostream& operator<<(ostream& os, const Prisoner& p){
+    cout<<"name: "<<p.name<<" experience: "<<p.experience<<" conviction: "<<p.conviction<<endl;
     if(p.gang != NULL){
         cout<<"gang: "<<p.gang->get_name()<<endl;
     }
@@ -69,7 +87,7 @@ ostream& operator<<(ostream& os, Prisoner& p){
 
 
 void join_gang(Prisoner& p1, const Prisoner& p2){
-    p1.set_gang(p2.get_gang());
+    p1.set_gang(p2.gang);
 }
 
 

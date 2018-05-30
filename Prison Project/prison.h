@@ -14,9 +14,12 @@ class Prison{
         int number_guards, number_prisoners;
         Guard** guards;
         Prisoner** prisoners;
+        void copyPrison(const Prison&);
     public:
         Prison();
         ~Prison();
+        Prison(const Prison&);
+        Prison& operator=(const Prison&);
         void hire_guard(Guard&);
         void accept_prisoner(Prisoner&);
         void hire_guard();
@@ -24,6 +27,20 @@ class Prison{
         void iterate_days(int)const;
         void prison_break(const Prisoner&);
 };
+void Prison::copyPrison(const Prison& other){
+    number_guards = other.number_guards;
+    number_prisoners = other.number_prisoners;
+    guards = new Guard*[number_guards];
+    for (int i=0; i<number_guards; i++)
+        guards[i] = other.guards[i];
+    prisoners = new Prisoner*[number_prisoners];
+    for(int i=0; i<number_prisoners; i++)
+        prisoners[i] = other.prisoners[i];
+    for(int i=0; i<4; i++)
+        for(int j=0; j<20; j++)cells[i][j] = other.cells[i][j];
+}
+
+
 Prison::Prison(){
     number_guards = 0;
     number_prisoners = 0;
@@ -36,6 +53,14 @@ Prison::Prison(){
 Prison::~Prison(){
     delete guards;
     delete prisoners;
+}
+Prison::Prison(const Prison& other){
+    copyPrison(other);
+}
+Prison& Prison::operator=(const Prison& other){
+    delete guards;
+    delete prisoners;
+    copyPrison(other);
 }
 
 void Prison::accept_prisoner(Prisoner& p){
