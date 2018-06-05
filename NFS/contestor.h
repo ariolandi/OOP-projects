@@ -22,6 +22,7 @@ class Contestor{
         virtual void print()const;
         bool isHuman()const;
         virtual char* getName()const = 0;
+        double compete()const;
 
         friend ostream& operator<<(ostream&, const Contestor&);
 };
@@ -71,6 +72,12 @@ void Contestor::print()const{
     cout<<"Car: "<<car<<"\nSkills: "<<skills<<endl;
 }
 
+/**
+ * Competition coeficient getter.
+ */
+double Contestor::compete()const{
+    return (getSkills() + getCarPower())*(100 + rand()%20);
+}
 
 /**
  * Ostream operator for Contestor class.

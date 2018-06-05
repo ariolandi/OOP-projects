@@ -38,18 +38,18 @@ Computer generateContestor(const Vector<Car> &cars){
     return Computer(c, skills);
 }
 
-void play(Race& race, const Vector<Pair<Car, int> >& store){
+void play(Race& race, Vector<Pair<Car, int> >& store){
     while(!race.finished()){
         int k=0, id=0, m;
         for(Vector<Player*>::Iterator it=race.getPlayers().begin(); it!=race.getPlayers().end(); ++it){
             id++;
-            cout<<"Player "<<id<<": "<<(*it)->getName()<<endl;
+            cout<<"Player "<<id<<": "<<*(*it)<<endl;
             bool flag=0;
             while(!flag){
                 flag=1;
                 cout<<"1. Buy a new car\n";
-                cout<<"2. Play against oponent of your choice\n";
-                cout<<"3. Play against random oponent\n";
+                cout<<"2. Play against opponent of your choice\n";
+                cout<<"3. Play against random opponent\n";
                 cout<<"What whould you like to do? >>"; cin>>m;
                 if(m==1){
                     flag=0;
@@ -71,14 +71,12 @@ void play(Race& race, const Vector<Pair<Car, int> >& store){
                     }
                 }
                 else if(m==2){
-                    char name[20];
-                    cout<<"Enter player's name: >>";
-                    cin.ignore();
-                    cin.getline(name, 20);
-                    cout<<"("<<name<<")\n";
-                    Contestor* p = race.getPlayer(name);
+                    race.contestorsPrint();
+                    int s;
+                    cout<<"Enter player's id: >>"; cin>>s;
+                    Contestor* p = race.getPlayer(s);
                     if(p!=NULL){
-                        Pair<Contestor*, Contestor*> pr(*it, race.getPlayer(name));
+                        Pair<Contestor*, Contestor*> pr(*it, p);
                         race.compete(pr);
                         k++;
                     }
@@ -88,6 +86,7 @@ void play(Race& race, const Vector<Pair<Car, int> >& store){
                     }
                 }
                 else if(m==3){
+                    cout<<"Your turn will be played after all players make their choice.\n";
                     continue;
                 }
                 else{
@@ -98,6 +97,7 @@ void play(Race& race, const Vector<Pair<Car, int> >& store){
             cout<<endl;
         }
         race.start(k);
+        cout<<"---"<<endl;
     }
     cout<<"Race finished!\n";
     cout<<race.getWinner()->getName()<<" Wins!"<<endl;

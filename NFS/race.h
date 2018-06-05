@@ -27,10 +27,11 @@ class Race{
 
         bool finished()const;
         void start(int);
-        Contestor* compete(const Pair<Contestor*, Contestor*>&)const;
+        Contestor* compete(const Pair<Contestor*, Contestor*>&);
         Vector<Player*> getPlayers()const;
-        Contestor* getPlayer(const char*)const;
+        Contestor* getPlayer(const int)const;
         Contestor* getWinner()const;
+        void contestorsPrint()const;
 };
 
 /**
@@ -77,15 +78,13 @@ void Race::start(int k=0){
 /**
  * A function which simulates a duel between two contestors.
  */
-Contestor* Race::compete(const Pair<Contestor*, Contestor*>& competitors)const{
+Contestor* Race::compete(const Pair<Contestor*, Contestor*>& competitors){
     Contestor* c1 = competitors.first;
     Contestor* c2 = competitors.second;
     used[c1] = current_round;
     used[c2] = current_round;
-    double coef_c1 = (c1->getSkills() + c1->getCarPower())*(100 + rand()%20);
-    double coef_c2 = (c2->getSkills() + c2->getCarPower())*(100 + rand()%20);
     Contestor *winner, *loser;
-    if(coef_c1 > coef_c2){
+    if(c1->compete() > c2->compete()){
         winner = c1;
         loser = c2;
     }
@@ -93,9 +92,9 @@ Contestor* Race::compete(const Pair<Contestor*, Contestor*>& competitors)const{
         winner = c2;
         loser = c1;
     }
-    winner->setSkills();
     cout<<"Winner!\n"<<*winner;
     cout<<loser->getName()<<" lost"<<endl<<endl;
+    winner->setSkills();
 
     return winner;
 }
@@ -107,28 +106,44 @@ bool Race::finished()const{
     return current_round == rounds;
 }
 
-
+/**
+ * A function which returns a list of all human contestors.
+ */
 Vector<Player*> Race::getPlayers()const{
     Vector<Player*> p;
-    for(int i=0; i<contestors.size(); i++){
-        if(contestors[i]->isHuman())p.push((Player*)contestors[i]);
+    for(Vector<Contestor*>::Iterator it=contestors.begin(); it!=contestors.end(); ++it){
+        if((*it)->isHuman())p.push((Player*)(*it));
     }
     return p;
 }
 
-Contestor* Race::getPlayer(const char* _name)const{
-    for(int i=0; i<contestors.size(); i++){
-        if(!strcmp(_name, contestors[i]->getName()))
-            return contestors[i];
+/**
+ * A contestor getter.
+ */
+Contestor* Race::getPlayer(const int idx)const{
+    if(idx >= 0 && idx < contestors.size()){
+        return contestors[idx];
     }
     return NULL;
 }
 
+/**
+ * A race winner getter.
+ */
 Contestor* Race::getWinner()const{
     if(finished()){
         return contestors[0];
     }
     else cout<<"Not finished yet!\n";
+}
+
+/**
+ * Print function.
+ */
+void Race::contestorsPrint()const{
+    for(int i=0; i<contestors.size(); i++){
+        cout<<"["<<i<<"]: "<<*contestors[i]<<endl;
+    }
 }
 
 #endif // __RACE_H__
